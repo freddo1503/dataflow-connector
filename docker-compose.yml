@@ -1,0 +1,48 @@
+networks:
+  kafka-network:
+    name: kafka-network
+    driver: bridge
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka-kraft
+    networks:
+      - kafka-network
+    ports:
+      - "9092:9092"
+      - "9093:9093"
+    environment:
+      KAFKA_CLUSTER_ID: 0pQBJPTeQQij2toZJBmJ_g
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    volumes:
+      - ./kafka.properties:/etc/kafka/kafka.properties
+      - ./data:/var/lib/kafka/data
+    command: >
+      sh -c "
+      kafka-storage format --ignore-formatted --cluster-id=0pQBJPTeQQij2toZJBmJ_g --config /etc/kafka/kafka.properties &&
+      kafka-server-start /etc/kafka/kafka.properties
+      "
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop
+    networks:
+      - kafka-network
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: kafka:9092
+      SERVER_PORT: 9000
+    depends_on:
+      - kafka
