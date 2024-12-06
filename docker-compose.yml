@@ -50,10 +50,22 @@ services:
   api:
     build:
       context: ./api
-    container_name: fastapi-app
+    container_name: api
     networks:
       - kafka-network
     ports:
       - "8000:8000"
     depends_on:
       - kafka
+  frontend:
+    build:
+      context: ./frontend
+    container_name: frontend
+    ports:
+      - "5000:5000"
+    networks:
+      - kafka-network
+    depends_on:
+      - api
+    environment:
+      - BACKEND_URL=http://api:8000
