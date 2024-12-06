@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/api/.idea/api.iml" filepath="$PROJECT_DIR$/api/.idea/api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/connectors/.idea/connectors.iml" filepath="$PROJECT_DIR$/connectors/.idea/connectors.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/dataflow-connector.iml" filepath="$PROJECT_DIR$/.idea/dataflow-connector.iml" />
+      <module fileurl="file://$PROJECT_DIR$/frontend/.idea/frontend.iml" filepath="$PROJECT_DIR$/frontend/.idea/frontend.iml" />
+    </modules>
+  </component>
+</project>
