@@ -5,7 +5,7 @@ networks:
 
 services:
   kafka:
-    image: confluentinc/cp-kafka:latest
+    image: confluentinc/cp-kafka:7.5.0
     container_name: kafka-kraft
     networks:
       - kafka-network
@@ -25,9 +25,15 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    healthcheck:
+      test: ["CMD", "kafka-consumer-groups", "--bootstrap-server", "kafka:9092", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     volumes:
+
       - ./kafka.properties:/etc/kafka/kafka.properties
-      - ./data:/var/lib/kafka/data
+      - kafka_data_volume:/var/lib/kafka/data
     command: >
       sh -c "
       kafka-storage format --ignore-formatted --cluster-id=0pQBJPTeQQij2toZJBmJ_g --config /etc/kafka/kafka.properties &&
@@ -35,7 +41,7 @@ services:
       "
 
   kafdrop:
-    image: obsidiandynamics/kafdrop
+    image: obsidiandynamics/kafdrop:latest
     container_name: kafdrop
     networks:
       - kafka-network
@@ -45,7 +51,8 @@ services:
       KAFKA_BROKERCONNECT: kafka:9092
       SERVER_PORT: 9000
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   api:
     build:
@@ -56,7 +63,9 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
+
   frontend:
     build:
       context: ./frontend
@@ -69,3 +78,19 @@ services:
       - api
     environment:
       - BACKEND_URL=http://api:8000
+
+  postgres:
+    image: postgres:16.6-alpine
+    container_name: postgres
+    networks:
+      - kafka-network
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - postgres_data_volume:/var/lib/postgresql/data
+
+volumes:
+  postgres_data_volume:
+  kafka_data_volume:
