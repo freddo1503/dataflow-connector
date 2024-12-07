@@ -1,6 +1,9 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+app = FastAPI(
+    title="Dataflow connector API",
+    version="0.1.0",
+)
 
 
 @app.get("/")
