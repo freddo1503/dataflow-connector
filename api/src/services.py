@@ -1,8 +1,8 @@
 from kafka import KafkaProducer
 from sqlmodel import Session
-from models import User, Message
-from schemas import UserCreate, UserResponse, MessageCreate, MessageResponse
-from config import KAFKA_TOPIC
+from core.models import User, Message
+from src.schemas import UserCreate, UserResponse, MessageCreate, MessageResponse
+from src.config import KAFKA_TOPIC
 import datetime
 
 

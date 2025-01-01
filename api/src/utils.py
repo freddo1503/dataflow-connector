@@ -1,6 +1,6 @@
 from sqlmodel import create_engine, Session
 from kafka import KafkaProducer
-from config import DATABASE_URL, KAFKA_BROKER_URL
+from src.config import DATABASE_URL, KAFKA_BROKER_URL
 
 # Database setup
 engine = create_engine(DATABASE_URL, echo=True)

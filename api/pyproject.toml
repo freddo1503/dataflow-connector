@@ -9,4 +9,9 @@ dependencies = [
     "kafka>=1.3.5",
     "sqlmodel>=0.0.22",
     "uvicorn>=0.32.1",
+    "connectors"
 ]
+
+
+[tool.uv.sources]
+connectors = { path = "../connectors" }
